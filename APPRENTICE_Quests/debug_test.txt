@@ -1,0 +1,21 @@
+コマンド　rdbg
+抜ける時Q
+
+cで続行 continue
+b 数字　その行にブレイクポイント設定
+b 15 15行目で留まる
+このブレイクポイントは終わったら無くなる
+
+プログラムに直接書き込むときは
+binding.break
+binding.b
+debugger
+など
+
+infoで変数チェック
+
+VScode　デバッガ
+下が青いとデバッグ中
+
+
+"useTerminal": trueをlaunch.jsonファイルに書かないとstdin標準入力で止まってしまう
