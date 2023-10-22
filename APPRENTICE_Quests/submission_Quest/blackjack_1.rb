@@ -2,16 +2,16 @@
 
 # 〇一回しか引けない end位置変更
 # 〇burstしても2重ループ抜けれない->exit?
-# 日本語訳
-# 被りあり
+# 〇被りあり
 # 〇Dealerの手札隠す
-# 手札を追加機能も関数にまとめる
+# 〇Aの得点場合分け
 
 # プレイヤークラス
 class Player
   def initialize()
     #手札
     #点数
+    #バーストしたか
   end
 
 end
@@ -20,6 +20,8 @@ end
 class Dealer
 
 end
+
+# デッキクラス
 
 # 変数
 used_cards = [] # 使用したカード配列
@@ -34,28 +36,33 @@ is_player_bust = false
 is_dealer_bust = false
 
 # 得点計算関数(引数:2次元配列のみ)
-def calculate(hands_arr)
+def calculate(hand_arr)
   sum = 0
-  over_10 = ['10', 'J', 'Q', 'K', 'A']
-  hands_arr.each do |hand|
+  ace_count = 0
+  score_10 = ['10', 'J', 'Q', 'K']
+
+  hand_arr.each do |hand|
     num_str = hand[0]
-    if over_10.include?(num_str)
+    if score_10.include?(num_str)
       num = 10
+    elsif num_str == 'A'
+      num = 11
+      ace_count += 1
     else
       num = num_str.to_i
     end
     sum += num
   end
+
+  # Aの場合分け処理 sum > 21 ならAを1として計算
+  ace_count.times do
+    if sum > 21
+      sum -= 10
+    end
+  end
+
   return sum
 end
-
-
-# # 乱数カード生成（被りあり）[num, suit]
-# def rand_card()
-#   deck_suits = ["S","H","D","C"]
-#   card = [rand(1..13), deck_suits[rand(0..3)]]
-#   return card
-# end
 
 # デッキ生成
 def deck_making()
@@ -70,24 +77,19 @@ def deck_making()
   return deck
 end
 
-
 # デッキからカード選択(引数：デッキ、使ったカードリスト)
 def select_card(deck, used_cards)
-  available_cards = deck - used_cards #配列の差分
-  selected_card = available_cards.sample #ランダム1枚
-  used_cards << selected_card
+  available_cards = deck - used_cards # 配列の差分
+  selected_card = available_cards.sample # ランダム1枚
+  used_cards << selected_card #　使用したカードを記録
   return selected_card
 end
 
-# # 配る クラス化したら機能出来そう
-# def distribution(player_name)
-#   player_name << select_card(deck, used_cards)
-# end
 
 # 実行部---------------------------------
 if __FILE__ == $PROGRAM_NAME
-
   puts "ブラックジャックを開始します。"
+
   #デッキ生成
   deck = deck_making()
 
@@ -116,15 +118,20 @@ if __FILE__ == $PROGRAM_NAME
     when "n"
       break
     when "y"
-      player_hand << select_card(deck, used_cards)
+
+      player_draw_card = select_card(deck, used_cards)
+      player_hand << player_draw_card
       player_score = calculate(player_hand)
+      puts"あなたの引いたカードは#{player_draw_card}です。"
 
       # プレイヤー バースト or 21判定
       if player_score > 21
         is_player_bust = true
+        puts"あなたの現在の得点は#{player_score}です"
         break
       elsif player_score == 21
         puts"You are BJ!"
+        puts"あなたの現在の得点は#{player_score}です"
         break
       end
     else
@@ -134,9 +141,10 @@ if __FILE__ == $PROGRAM_NAME
 
   # ディーラードロー
   while dealer_score < 17
-    dealer_hand << select_card(deck, used_cards)
+    dealer_draw_card  = select_card(deck, used_cards)
+    dealer_hand << dealer_draw_card
     dealer_score = calculate(dealer_hand)
-    p dealer_hand
+    puts"ディーラーの引いたカードは#{dealer_draw_card}です。"
     puts "Dealer's score is #{dealer_score}"
   end
 
@@ -144,6 +152,8 @@ if __FILE__ == $PROGRAM_NAME
   if 21 < dealer_score
     is_dealer_bust = true
   end
+
+  puts "ディーラーの手札は#{dealer_hand}です。"
 
   puts "Player's score is #{player_score}"
   puts "Dealer's score is #{dealer_score}"
@@ -175,15 +185,12 @@ if __FILE__ == $PROGRAM_NAME
   if diff_21_player_score < diff_21_dealer_score
     puts "あなたの勝ちです！"
     puts "ブラックジャックを終了します。"
-    exit
   elsif diff_21_player_score == diff_21_dealer_score
     puts "引き分けです！"
     puts "ブラックジャックを終了します。"
-    exit
   elsif diff_21_player_score > diff_21_dealer_score
     puts "あなたの負けです！"
     puts "ブラックジャックを終了します。"
-    exit
   end
-
+  exit
 end
