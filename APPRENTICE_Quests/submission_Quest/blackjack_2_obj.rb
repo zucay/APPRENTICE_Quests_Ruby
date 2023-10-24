@@ -99,6 +99,7 @@ end
 class Dealer < BJ_player
   # ドローメソッド（17以上までドロー）
   def dealer_draw(deck_obj, deck)
+    show_hand
     show_score
     while @score < 17
       deck_obj.dealing(deck, self)
@@ -213,12 +214,10 @@ if __FILE__ == $PROGRAM_NAME
   bj_deck = deck_obj.deck_making
 
   # 手札配り(引数:デッキ,参加者)
-  deck_obj.dealing(bj_deck, player)
-  deck_obj.dealing(bj_deck, player)
-
-  deck_obj.dealing(bj_deck, dealer)
-  deck_obj.dealing(bj_deck, dealer)
-
+  2.times do
+    deck_obj.dealing(bj_deck, player)
+    deck_obj.dealing(bj_deck, dealer)
+  end
   # 点数計算
   player.calculate
   dealer.calculate
