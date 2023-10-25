@@ -41,6 +41,7 @@ class BJ_player
       end
       sum += num
     end
+
     # Aの場合分け処理 sum > 21 ならAを1として計算
     ace_count.times do
       if sum > 21
@@ -88,7 +89,7 @@ class Player < BJ_player
         show_latest_draw
         calculate
         show_score
-        if @is_bj || @is_bust
+        if @is_bj || @is_bust # 21以上でbreak
           break
         end
       else
@@ -119,25 +120,19 @@ class Dealer < BJ_player
     puts "#{@name}の引いた2枚目のカードはわかりません。"
   end
 end
+
+
 # CPUクラス-----------------------------------------------------------------------
 class CPU < BJ_player
-  attr_accessor :join_number
-
-  def initialize(name, number_of_cpu)
-    super(name)
-    @number_of_cpu = number_of_cpu
-  end
-
   # ドローメソッド
-  def CPU_draw(deck_obj, deck)
-    # ランダム？Dealerと同じにするか？
+  def cpu_draw(deck_obj, deck) # ランダム？Dealerと同じにするか？
+    while @score < 17
+      deck_obj.dealing(deck, self)
+      calculate
+      show_latest_draw
+    end
   end
-
-
 end
-
-
-
 
 
 # Deckクラス----------------------------------------------------------------------
@@ -179,20 +174,38 @@ end
 
 # Gameクラス-----------------------------------------------------------------------
 class Game
-  def initialize(name1, name2)
-    @in_game_player_name1 = name1
-    @in_game_player_name2 = name2
+  attr_accessor :number_of_cpu, :cpus
+
+  def initialize()
+    @number_of_cpu = 0
+    @cpus = []
   end
 
   # 開始メソッド
-  def start
+  def start_log
     puts 'ブラックジャックを開始します。'
   end
 
   # 終了メソッド
-  def end
+  def end_log
     puts 'ブラックジャックを終了します。'
     exit
+  end
+
+  # CPU人数確認メソッド
+  def asking_cpu_num
+    while true
+    puts 'CPUの参加人数を選んでください(0 ~ 2)'
+    cpu_num_str = gets.chomp
+      case cpu_num_str
+      when '0','1','2'
+        puts "CPUは#{cpu_num_str}人です"
+        break
+      else
+        puts "0~2を入力してください"
+      end
+    end
+    @number_of_cpu = cpu_num_str.to_i
   end
 
   # 勝敗判定メソッド
@@ -200,82 +213,82 @@ class Game
     # バースト勝敗判定
     if player_obj.is_bust || dealer_obj.is_bust
       if player_obj.is_bust && dealer_obj.is_bust
-        puts '両者バーストです！'
-        puts '引き分けです！'
+        puts "両者バーストです！引き分けです！"
       elsif player_obj.is_bust
-        puts 'あなたのバーストです！'
-        puts 'あなたの負けです！'
+        puts "#{player_obj.name}のバーストです！#{player_obj.name}の負けです！"
       elsif dealer_obj.is_bust
-        puts 'ディーラーのバーストです！'
-        puts 'あなたの勝ちです！'
+        puts "#{dealer_obj.name}のバーストです！#{player_obj.name}の勝ちです！"
       end
 
     # 点数勝敗判定
     else
       if 21 - player_obj.score < 21 - dealer_obj.score
-        puts 'あなたの勝ちです！'
+        puts "#{player_obj.name}の勝ちです！"
       elsif 21 - player_obj.score == 21 - dealer_obj.score
-        puts '引き分けです！'
+        puts "引き分けです！"
       elsif 21 - player_obj.score > 21 - dealer_obj.score
-        puts 'あなたの負けです！'
+        puts "#{player_obj.name}の負けです！"
       end
     end
   end
 end
 
+
 # 実行部(メインファイルなら以下実行)-----------------------------------------------------------------------
 if __FILE__ == $PROGRAM_NAME
+
   # インスタンス化
-  bj_game = Game.new('dealer', 'player')
+  bj_game = Game.new
   deck_obj = Deck.new('bj_deck')
-  player = Player.new('player')
-  dealer = Dealer.new('dealer')
-
-  cpu1 = CPU.new('cpu1', 1)
-
+  player = Player.new('Player')
+  dealer = Dealer.new('Dealer')
 
   # BJ開始
-  bj_game.start
+  bj_game.start_log
+  bj_game.asking_cpu_num
 
+  # CPUを入力の数だけインスタンス化しオブジェクトをcpus配列に格納
+  num_cpus = bj_game.number_of_cpu
+  cpus = []
+  num_cpus.times {|i| cpus << CPU.new("CPU_#{i + 1}")}
 
-  # デッキ生成
+  # デッキ配列生成
   bj_deck = deck_obj.deck_making
 
   # 初期の2枚手札配り(引数:デッキ,参加者obj)
   2.times do
     deck_obj.dealing(bj_deck, player)
     deck_obj.dealing(bj_deck, dealer)
-    deck_obj.dealing(bj_deck, cpu1)
-
+    cpus.each { |cpu| deck_obj.dealing(bj_deck, cpu)}
   end
 
   # 点数計算
   player.calculate
   dealer.calculate
-  cpu1.calculate
+  cpus.each { |cpu| cpu.calculate}
 
   # 点数とハンド表示
   player.show_hand
   dealer.show_one_hand
   player.show_score
+  # cpus.each { |cpu| cpu.show_hand} #debug
   # dealer.show_hand # debug用
   # dealer.show_score # debug用
-  cpu1.show_hand #debug
-  cpu1.show_score
+  # cpu1.show_hand #debug
+  # cpu1.show_score
 
-
-
-  # プレイヤードロー 入力ループ部
-  player.player_draw(deck_obj, bj_deck)
-
-  # ディーラードロー
+  # ドロー
+  player.player_draw(deck_obj, bj_deck) # 入力部
   dealer.dealer_draw(deck_obj, bj_deck)
+  cpus.each {|cpu| cpu.cpu_draw(deck_obj, bj_deck)}
 
   # 勝敗判定
-  player.show_score
   dealer.show_score
+  cpus.each { |cpu| cpu.show_score}
+  cpus.each { |cpu| bj_game.win_or_lose(cpu, dealer)}
+  player.show_score
   bj_game.win_or_lose(player, dealer)
 
   # BJ終了
-  bj_game.end
+  bj_game.end_log
 end
