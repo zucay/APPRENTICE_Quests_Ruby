@@ -14,6 +14,13 @@
 # 〇CPUのインスタンス化、実行
 # 〇CPUの挙動
 
+# STEP4
+# チップ概念の追加（追加 BJクラス 変数:チップ、
+# メソッド チップshow、bet、チップcaluculate、各ルールの行動）
+# ダブルダウン、スプリット、サレンダー
+# CPUのベッティング
+# ゲームのループ
+
 # クラス---------------------------------------------------------
 # BJ_playerクラス（親クラス）
 class BJ_player
@@ -178,11 +185,11 @@ end
 
 # Gameクラス-----------------------------------------------------------------------
 class Game
-  attr_accessor :number_of_cpu, :cpus
+  attr_accessor :number_of_cpu, :cpu_obj_arr
 
   def initialize()
     @number_of_cpu = 0
-    @cpus = []
+    @cpu_obj_arr = []
   end
 
   # 開始メソッド
@@ -251,10 +258,10 @@ if __FILE__ == $PROGRAM_NAME
   bj_game.start_log
   bj_game.asking_cpu_num
 
-  # CPUを入力の数だけインスタンス化しオブジェクトをcpus配列に格納
-  num_cpus = bj_game.number_of_cpu
-  cpus = []
-  num_cpus.times {|i| cpus << CPU.new("CPU_#{i + 1}")}
+  # CPUを入力の数だけインスタンス化しオブジェクトをcpu_obj_arr配列に格納
+  num_cpu_obj_arr = bj_game.number_of_cpu
+  cpu_obj_arr = []
+  num_cpu_obj_arr.times {|i| cpu_obj_arr << CPU.new("CPU_#{i + 1}")}
 
   # デッキ配列生成
   bj_deck = deck_obj.deck_making
@@ -263,13 +270,13 @@ if __FILE__ == $PROGRAM_NAME
   2.times do
     deck_obj.dealing(bj_deck, player)
     deck_obj.dealing(bj_deck, dealer)
-    cpus.each { |cpu| deck_obj.dealing(bj_deck, cpu)}
+    cpu_obj_arr.each { |cpu| deck_obj.dealing(bj_deck, cpu)}
   end
 
   # 点数計算
   player.calculate
   dealer.calculate
-  cpus.each { |cpu| cpu.calculate}
+  cpu_obj_arr.each { |cpu| cpu.calculate}
 
   # 点数とハンド表示
   player.show_hand
@@ -279,12 +286,12 @@ if __FILE__ == $PROGRAM_NAME
   # ドロー
   player.player_draw(deck_obj, bj_deck) # 入力部
   dealer.dealer_draw(deck_obj, bj_deck)
-  cpus.each {|cpu| cpu.cpu_draw(deck_obj, bj_deck)}
+  cpu_obj_arr.each {|cpu| cpu.cpu_draw(deck_obj, bj_deck)}
 
   # 勝敗判定
   dealer.show_score
-  cpus.each { |cpu| cpu.show_score}
-  cpus.each { |cpu| bj_game.win_or_lose(cpu, dealer)}
+  cpu_obj_arr.each { |cpu| cpu.show_score}
+  cpu_obj_arr.each { |cpu| bj_game.win_or_lose(cpu, dealer)}
   player.show_score
   bj_game.win_or_lose(player, dealer)
 
