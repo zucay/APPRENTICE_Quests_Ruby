@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-# 〇一回しか引けない end位置変更
-# 〇burstしても2重ループ抜けれない->exit?
+# STEP1
+# 〇一回しか引けない
+# 〇burstしても2重ループ抜けれない
 # 〇被りあり
 # 〇Dealerの手札隠す
+
+# STEP2
 # 〇Aの得点場合分け
 
-# CPUの可変追加
-# それによるコード変更
-# CPUの挙動
+# STEP3
+# 〇CPUの可変追加
+# 〇CPUのインスタンス化、実行
+# 〇CPUの挙動
 
 # クラス---------------------------------------------------------
 # BJ_playerクラス（親クラス）
@@ -271,11 +275,6 @@ if __FILE__ == $PROGRAM_NAME
   player.show_hand
   dealer.show_one_hand
   player.show_score
-  # cpus.each { |cpu| cpu.show_hand} #debug
-  # dealer.show_hand # debug用
-  # dealer.show_score # debug用
-  # cpu1.show_hand #debug
-  # cpu1.show_score
 
   # ドロー
   player.player_draw(deck_obj, bj_deck) # 入力部
