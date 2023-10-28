@@ -73,7 +73,7 @@ end
 class Player < BJ_player
   # ドローメソッド
   def player_draw(deck_obj , deck)
-    while true # 'y'入力 or 21以上までループ
+    loop do # 'y'入力 or 21以上までループ
       puts 'カードを引きますか？(y/n)'
       y_or_n = gets.chomp
       case y_or_n
@@ -93,7 +93,6 @@ class Player < BJ_player
     end
   end
 end
-
 
 # Dealerクラス-----------------------------------------------------------------------
 class Dealer < BJ_player
@@ -151,7 +150,6 @@ class Deck
     bj_player_obj.hand << select_card(deck)
   end
 end
-
 
 # Gameクラス-----------------------------------------------------------------------
 class Game
@@ -226,8 +224,6 @@ if __FILE__ == $PROGRAM_NAME
   player.show_hand
   dealer.show_one_hand
   player.show_score
-  # dealer.show_hand # debug用
-  # dealer.show_score # debug用
 
   # プレイヤードロー 入力ループ部
   player.player_draw(deck_obj, bj_deck)

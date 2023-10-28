@@ -92,7 +92,7 @@ end
 class Player < BJ_player
   # ドローメソッド
   def player_draw(deck_obj , deck)
-    while true # 'y'入力 or 21以上までループ
+    loop do # 'y'入力 or 21以上までループ
       puts 'カードを引きますか？(y/n)'
       y_or_n = gets.chomp
       case y_or_n
@@ -276,7 +276,7 @@ if __FILE__ == $PROGRAM_NAME
   # 点数計算
   player.calculate
   dealer.calculate
-  cpu_obj_arr.each { |cpu| cpu.calculate }
+  cpu_obj_arr.each(&:calculate)
 
   # 点数とハンド表示
   player.show_hand

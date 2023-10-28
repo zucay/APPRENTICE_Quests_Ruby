@@ -36,7 +36,8 @@
 # 〇ダブルダウン
 # 〇サレンダー
 
-# ダブルダウン
+# スプリット
+# caluculateを引数にhand取る用にして、scoreもハンド別に管理、
 # CPUのチップ管理とベッティングとドローの挙動
 
 # クラス---------------------------------------------------------
@@ -137,7 +138,7 @@ class BJ_player
     puts 'チップが無くなりました！'
   end
 
-  # 勝敗チップ支払いメソッド
+  # 勝敗チップ獲得メソッド
   def return_chips
     # 勝敗状態とアクション状態で分岐
     back_chips = 0
@@ -228,7 +229,7 @@ class Player < BJ_player
     @win_lose_draw_status = :lose
   end
 
-  # # スプリット
+  # # スプリット # WIP
   # def split_pairs(deck_obj, deck)
   #   puts 'スプリットします。'
   #   splited_hand1 = [@hand[0]]

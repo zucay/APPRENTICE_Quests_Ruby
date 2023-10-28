@@ -7,30 +7,17 @@
 # 〇Aの得点場合分け
 
 # プレイヤークラス
-class Player
-  def initialize()
-    #手札
-    #点数
-    #バーストしたか
-  end
 
-end
-
-# ディーラークラス
-class Dealer
-
-end
 
 # デッキクラス
 
 # 変数
 used_cards = [] # 使用したカード配列
-
 player_hand = []
 dealer_hand = []
 
 player_score = 0
-dealer_score = 0
+# dealer_score = 0
 
 is_player_bust = false
 is_dealer_bust = false
@@ -65,7 +52,7 @@ def calculate(hand_arr)
 end
 
 # デッキ生成
-def deck_making()
+def deck_making
   deck = []
   suits = ['Heart', 'Diamond', 'Club', 'Spade']
   nums = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -81,19 +68,19 @@ end
 def select_card(deck, used_cards)
   available_cards = deck - used_cards # 配列の差分
   selected_card = available_cards.sample # ランダム1枚
-  used_cards << selected_card #　使用したカードを記録
+  used_cards << selected_card # 使用したカードを記録
   return selected_card
 end
 
 
 # 実行部---------------------------------
 if __FILE__ == $PROGRAM_NAME
-  puts "ブラックジャックを開始します。"
+  puts 'ブラックジャックを開始します。'
 
-  #デッキ生成
-  deck = deck_making()
+  # デッキ生成
+  deck = deck_making
 
-  #手札配り
+  # 手札配り
   player_hand << select_card(deck, used_cards)
   player_hand << select_card(deck, used_cards)
 
@@ -103,53 +90,52 @@ if __FILE__ == $PROGRAM_NAME
   # 手札、点数情報の公開
   puts "あなたの手札は#{player_hand}です。"
   puts "ディーラーの引いたカードは #{dealer_hand[0]}です。"
-  puts "ディーラーの引いた2枚目のカードはわかりません。"
+  puts 'ディーラーの引いた2枚目のカードはわかりません。'
 
   player_score = calculate(player_hand)
   dealer_score = calculate(dealer_hand)
-  # puts "dealer's score is #{dealer_score}"
 
-# ループ部
-  while true
+  # ループ部
+  loop do
     puts "あなたの現在の得点は#{player_score}です。カードを引きますか？(y/n)"
     y_or_n = gets.chomp
     # 入力部
     case y_or_n
-    when "n"
+    when 'n'
       break
-    when "y"
+    when 'y'
 
       player_draw_card = select_card(deck, used_cards)
       player_hand << player_draw_card
       player_score = calculate(player_hand)
-      puts"あなたの引いたカードは#{player_draw_card}です。"
+      puts "あなたの引いたカードは#{player_draw_card}です。"
 
       # プレイヤー バースト or 21判定
       if player_score > 21
         is_player_bust = true
-        puts"あなたの現在の得点は#{player_score}です"
+        puts "あなたの現在の得点は#{player_score}です"
         break
       elsif player_score == 21
-        puts"You are BJ!"
-        puts"あなたの現在の得点は#{player_score}です"
+        puts 'You are BJ!'
+        puts "あなたの現在の得点は#{player_score}です"
         break
       end
     else
-      puts "y/n を入力してください"
+      puts 'y/n を入力してください'
     end
   end
 
   # ディーラードロー
   while dealer_score < 17
-    dealer_draw_card  = select_card(deck, used_cards)
+    dealer_draw_card = select_card(deck, used_cards)
     dealer_hand << dealer_draw_card
     dealer_score = calculate(dealer_hand)
-    puts"ディーラーの引いたカードは#{dealer_draw_card}です。"
+    puts "ディーラーの引いたカードは#{dealer_draw_card}です。"
     puts "Dealer's score is #{dealer_score}"
   end
 
   # ディーラーバースト判定
-  if 21 < dealer_score
+  if dealer_score > 21
     is_dealer_bust = true
   end
 
@@ -161,20 +147,20 @@ if __FILE__ == $PROGRAM_NAME
 
   # 勝敗判定
 
-  #バースト判定
+  # バースト判定
   if is_player_bust || is_dealer_bust
     if is_player_bust && is_dealer_bust
-      puts "両者バーストです！"
-      puts "引き分けです！"
-      puts "ブラックジャックを終了します。"
+      puts '両者バーストです！'
+      puts '引き分けです！'
+      puts 'ブラックジャックを終了します。'
     elsif is_player_bust
-      puts "あなたのバーストです！"
-      puts "あなたの負けです！"
-      puts "ブラックジャックを終了します。"
+      puts 'あなたのバーストです！'
+      puts 'あなたの負けです！'
+      puts 'ブラックジャックを終了します。'
     elsif is_dealer_bust
-      puts "ディーラーのバーストです！"
-      puts "あなたの勝ちです！"
-      puts "ブラックジャックを終了します。"
+      puts 'ディーラーのバーストです！'
+      puts 'あなたの勝ちです！'
+      puts 'ブラックジャックを終了します。'
     end
     exit
   end
@@ -184,14 +170,14 @@ if __FILE__ == $PROGRAM_NAME
   diff_21_dealer_score = 21 - dealer_score
 
   if diff_21_player_score < diff_21_dealer_score
-    puts "あなたの勝ちです！"
-    puts "ブラックジャックを終了します。"
+    puts 'あなたの勝ちです！'
+    puts 'ブラックジャックを終了します。'
   elsif diff_21_player_score == diff_21_dealer_score
-    puts "引き分けです！"
-    puts "ブラックジャックを終了します。"
+    puts '引き分けです！'
+    puts 'ブラックジャックを終了します。'
   elsif diff_21_player_score > diff_21_dealer_score
-    puts "あなたの負けです！"
-    puts "ブラックジャックを終了します。"
+    puts 'あなたの負けです！'
+    puts 'ブラックジャックを終了します。'
   end
   exit
 end
