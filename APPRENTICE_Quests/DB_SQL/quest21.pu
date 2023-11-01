@@ -1,0 +1,43 @@
+alt+Dで表示
+
+@startuml sample
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Customers" as cus {
+  *Customer_id : integer <<generated>>
+  --
+  *customer_name : varchar (100)
+  *buy_info_id : integer <<FK>>
+}
+entity "Buy_information" as bi {
+    *buy_info_id : integer <<generated>>
+    --
+    *buy_date : date
+    *product_id : integer <<FK>>
+    *product_buy_num : integer
+    *sum_price : integer
+}
+entity "Products" as pr {
+    *product_id : integer <<generated>>
+    --
+    *product_name : varchar (100)
+    *price : integer
+    *product_category_id : integer <<FK>>
+}
+entity "Product_categories" as pc {
+    *product_category_id : integer <<generated>>
+    --
+    *category_name : varchar (100)
+}
+
+cus||--o{bi
+bi||--|{pr
+pr--|{pc
+
+@enduml
+

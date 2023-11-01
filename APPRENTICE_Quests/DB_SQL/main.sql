@@ -34,4 +34,53 @@ FROM salaries
 WHERE emp_no BETWEEN 10000 AND 10100
 GROUP BY emp_no 
 HAVING MAX(to_date) <> '9999-01-01'
-LIMIT 100;
+LIMIT 100; 
+
+SELECT *
+FROM dept_manager AS dm
+INNER JOIN employees AS e
+ON dm.emp_no = e.emp_no
+LIMIT 50;
+
+SELECT dm.dept_no, dm.emp_no, e.first_name, e.last_name
+FROM dept_manager AS dm
+INNER JOIN employees AS e
+ON dm.emp_no = e.emp_no
+LIMIT 50;
+
+SELECT dm.dept_no, dp.dept_name, dm.emp_no, e.first_name, e.last_name
+FROM dept_manager AS dm
+INNER JOIN employees AS e
+ON dm.emp_no = e.emp_no
+INNER JOIN departments AS dp
+ON dm.dept_no = dp.dept_no
+ORDER BY dept_no
+LIMIT 50;
+
+
+SELECT dm.dept_no, dp.dept_name, dm.emp_no, e.first_name, e.last_name, dm.to_date
+FROM dept_manager AS dm
+INNER JOIN employees AS e
+ON dm.emp_no = e.emp_no
+INNER JOIN departments AS dp
+ON dm.dept_no = dp.dept_no
+WHERE dm.to_date = '9999-01-01'
+ORDER BY dept_no
+LIMIT 50;
+
+SELECT *
+FROM employees AS em
+INNER JOIN salaries AS sa
+ON em.emp_no = sa.emp_no
+WHERE em.emp_no BETWEEN '10001' AND '10010'
+ORDER BY em.emp_no
+;
+
+SELECT em.emp_no, em.first_name, em.last_name, SUM(sa.salary), MIN(sa.from_date),MAX(sa.to_date)
+FROM employees AS em
+INNER JOIN salaries AS sa
+ON em.emp_no = sa.emp_no
+WHERE em.emp_no BETWEEN '10001' AND '10010'
+GROUP BY em.emp_no
+ORDER BY em.emp_no
+;
