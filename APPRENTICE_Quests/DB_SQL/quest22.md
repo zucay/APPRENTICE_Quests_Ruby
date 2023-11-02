@@ -97,3 +97,4 @@ EC サイトの ER 図を、テーブル定義しましょう。各テーブル�
 |product_category_id|bigint(20)||PRIMARY||YES|
 |category_name|varchar(100)|||||
 
+ 

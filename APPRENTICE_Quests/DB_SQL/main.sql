@@ -84,3 +84,124 @@ WHERE em.emp_no BETWEEN '10001' AND '10010'
 GROUP BY em.emp_no
 ORDER BY em.emp_no
 ;
+
+EXPLAIN ANALYZE
+SELECT *
+FROM employees
+WHERE birth_date = '1961-08-03';
+
+CREATE INDEX birth_index
+ON employees (birth_date);
+
+DROP INDEX birth_index
+ON employees;
+
+START TRANSACTION;
+INSERT INTO example (shohin_id, shohin_mei, shohin_bunrui) VALUES (1, 'T-shirt', '衣服');
+INSERT INTO example (shohin_id, shohin_mei, shohin_bunrui) VALUES (2, 'super-T-shirt', '衣服');
+
+COMMIT;
+
+
+START TRANSACTION;
+
+SELECT *
+FROM salaries
+WHERE emp_no = '10001'
+AND from_date = '1986-06-26'
+LIMIT 50;
+
+START TRANSACTION;
+
+UPDATE salaries
+SET salary = salary * 5
+WHERE emp_no = '10001'
+AND from_date = '1986-06-26';
+
+START TRANSACTION;
+UPDATE salaries
+SET salary = 5000
+WHERE emp_no = '10001'
+AND from_date = '1986-06-26';
+
+SELECT emp_no, salary
+FROM salaries
+WHERE emp_no BETWEEN '10001' AND '10010'
+HAVING salary > (SELECT AVG(salary) FROM salaries)
+
+SELECT DISTINCT(emp_no)
+FROM salaries
+WHERE salary > (SELECT AVG(salary) * 2 FROM salaries);
+
+SELECT emp_no, MAX(salary) AS max_sa
+FROM salaries
+WHERE emp_no BETWEEN '10001' AND '10010'
+GROUP BY emp_no
+HAVING max_sa > (SELECT AVG(salary) FROM salaries);
+
+EXPL
+
+SELECT gender ,MIN(birth_date)
+FROM employees
+GROUP BY gender
+
+SELECT gender, emp_no, birth_date
+        FROM employees AS e1
+        WHERE emp_no <= (SELECT MIN(e2.emp_no)
+                            FROM employees AS e2
+                        WHERE e1.hire_date = e2.hire_date);
+
+    k,lk,lllllllll     ,cvc
+
+SELECT emp_no
+FROM dept_manager AS d1
+WHERE emp_no <=(SELECT MAX(emp_no)
+                FROM dept_manager AS d2
+                WHERE d1.dept_no = d2.dept_no);
+
+select emp_no, to_date,
+    CASE WHEN to_date = '9999-01-01' THEN 'unemployed'
+         ELSE 'employed'
+    END AS "zaishoku"
+FROM dept_emp
+WHERE emp_no BETWEEN '10100' AND '10200';
+
+select emp_no, birth_date,
+    CASE WHEN birth_date BETWEEN '1950-01-01' AND '1959-12-31'
+         THEN '50s'
+         WHEN birth_date BETWEEN '1960-01-01' AND '1969-12-31'
+         THEN '60s'
+         ELSE 'else'
+    END AS "birth-decade"
+FROM employees
+WHERE emp_no BETWEEN '10001' AND '10050';
+
+select e.birth_date, sa.salary ,
+    CASE WHEN e.birth_date BETWEEN '1950-01-01' AND '1959-12-31'
+         THEN '50s'
+         WHEN e.birth_date BETWEEN '1960-01-01' AND '1969-12-31'
+         THEN '60s'
+         ELSE 'else'
+    END AS birth_decade
+FROM employees AS e
+INNER JOIN salaries AS sa
+ON e.emp_no = sa.emp_no
+WHERE e.emp_no BETWEEN '10001' AND '10050'
+LIMIT 100;
+
+
+SELECT birth_decade, MAX(salary)
+FROM
+(select e.birth_date, sa.salary ,
+    CASE WHEN e.birth_date BETWEEN '1950-01-01' AND '1959-12-31'
+         THEN '50s'
+         WHEN e.birth_date BETWEEN '1960-01-01' AND '1969-12-31'
+         THEN '60s'
+         ELSE 'else'
+    END AS birth_decade
+FROM employees AS e
+INNER JOIN salaries AS sa
+ON e.emp_no = sa.emp_no
+WHERE e.emp_no BETWEEN '10001' AND '10050') AS sub
+GROUP BY birth_decade
+LIMIT 100;
