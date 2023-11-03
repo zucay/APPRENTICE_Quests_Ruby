@@ -1,0 +1,70 @@
+@startuml internetTV
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Channel" as chan{
+    *チャンネルID : integer <<generated>>
+    --
+    *チャンネル名 : varchar (100)
+}
+entity "Programs" as pro{
+    *番組ID : integer <<generated>>
+    --
+    *番組名 : date
+    *番組カテゴリID : integer
+    *番組詳細 : integer
+    *放送チャンネルID : integer
+    *放送開始時間
+    *放送終了時間
+    *番組再生数
+
+    *コンテンツID
+    *シーズンID
+    *エピソードID
+}
+entity "Contents" as con {
+    *コンテンツID : integer <<generated>>
+    --
+    *コンテンツ名 : varchar (100)
+    *総エピソード数
+    *総シーズン数
+    *作品詳細
+}
+entity "Program_Categories" as pc {
+    *番組カテゴリID : integer <<generated>>
+    --
+    *番組カテゴリ名 : varchar (100)
+}
+entity "Seasons" as se {
+    *シーズンID : integer <<generated>>
+    --
+    *シーズン名 : varchar (100)
+    *総エピソード数
+}
+
+entity "Episodes" as ep {
+    *エピソードID : integer <<generated>>
+    --
+    *コンテンツID
+    *シーズンID
+    *エピソード数 : varchar (100)
+    *エピソード名
+    *エピソード詳細
+    *動画時間
+    *公開日
+    *エピソード再生数
+
+    *放送番組ID
+}
+
+chan}|--||pro
+ep||--|{con
+pro||--|{ep
+ep||--|{se
+pro||--|{pc
+@enduml
+
