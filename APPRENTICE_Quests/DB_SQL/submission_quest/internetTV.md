@@ -58,6 +58,8 @@
 |チャンネルID|bigint(20)||PRIMARY||YES|
 |チャンネル名|varchar(100)|||||
 
+
+
 # Programs
 
 |カラム名|データ型|NULL|キー|初期値|AUTO INCREMENT|
@@ -73,6 +75,8 @@
 |コンテンツID|bigint(20)|||||
 |シーズンID|bigint(20)|||||
 |エピソードID|bigint(20)|||||
+
+
 
 # Contents
 
@@ -115,7 +119,6 @@
 | シーズンID   | bigint(20)  |      | PRIMARY |        | YES             |
 | シーズン名   | varchar(100) |   |         |        |                 |
 | 総エピソード数 | bigint(20)  |  |         |        |                 |
-
 
 
 
