@@ -1,5 +1,5 @@
 ## 提出クエストのパス
-APPRENTICE_Quests/Ruby/submission_Quest 
+APPRENTICE_Quests/Ruby/submission_Quest [リンク](APPRENTICE_Quests/Ruby/submission_Quest)
 この中にブラックジャックのプログラムがあります。  
 
 ## Rubocopに対しての修正
